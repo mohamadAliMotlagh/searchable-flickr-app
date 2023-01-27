@@ -1,3 +1,9 @@
+package common
+
+import BuildAndroidConfig
+import Versions
+import kapt
+
 plugins {
     id("com.android.library")
     id("kotlin-android")
