@@ -1,4 +1,4 @@
-package com.example.flickerlist
+package com.motlagh.flickerlist
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.example.uikit.theme
+package com.motlagh.uikit.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

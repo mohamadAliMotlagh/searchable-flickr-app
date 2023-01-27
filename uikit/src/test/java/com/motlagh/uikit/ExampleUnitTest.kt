@@ -1,4 +1,4 @@
-package com.example.uikit
+package com.motlagh.uikit
 
 import org.junit.Test
 
