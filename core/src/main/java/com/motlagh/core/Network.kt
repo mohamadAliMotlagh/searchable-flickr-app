@@ -1,5 +1,6 @@
 package com.motlagh.core
 
+import com.motlagh.core.calladapter.NetworkResultModelAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +21,7 @@ class NetworkManager() {
         return Retrofit.Builder()
             .baseUrl("")// its could be in BuildConfig.
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(NetworkResultModelAdapterFactory.create())
             .client(OkHttpClient.Builder()
                 .apply {
 //                    if (BuildConfig.DEBUG) {
