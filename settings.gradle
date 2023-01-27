@@ -16,3 +16,4 @@ rootProject.name = "Flicker"
 include ':app'
 include ':uikit'
 include ':features:flickerlist'
+include ':core'
