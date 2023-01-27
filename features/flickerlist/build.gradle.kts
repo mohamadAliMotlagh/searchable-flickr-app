@@ -7,4 +7,5 @@ android{
 
 dependencies {
     implementation(project(":uikit"))
+    implementation(project(":core"))
 }
