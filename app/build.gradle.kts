@@ -65,4 +65,6 @@ dependencies {
     addAndroidTestsDependencies()
     room()
     hilt()
+    implementation(project(":uikit"))
+
 }

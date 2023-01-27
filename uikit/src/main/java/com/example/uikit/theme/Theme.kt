@@ -1,10 +1,11 @@
-package com.example.flicker.ui.theme
+package com.example.uikit.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import com.example.uikit.theme.*
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,

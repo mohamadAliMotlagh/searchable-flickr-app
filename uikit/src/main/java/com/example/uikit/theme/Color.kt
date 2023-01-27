@@ -1,4 +1,4 @@
-package com.example.flicker.ui.theme
+package com.example.uikit.theme
 
 import androidx.compose.ui.graphics.Color
 
