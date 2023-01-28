@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
-   // id("dagger.hilt.android.plugin")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -66,5 +66,6 @@ dependencies {
     room()
     hilt()
     implementation(project(":uikit"))
+    implementation(project(":features:flickerlist"))
 
 }

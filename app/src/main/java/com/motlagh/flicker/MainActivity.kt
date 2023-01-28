@@ -9,9 +9,13 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.motlagh.flickerlist.presenter.FlickrUI
 import com.motlagh.uikit.theme.FlickerTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,9 +24,9 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = Color.White
                 ) {
-                    Greeting("Android")
+                    FlickrUI()
                 }
             }
         }
@@ -38,6 +42,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     FlickerTheme {
-        Greeting("Android")
+        FlickrUI()
     }
 }

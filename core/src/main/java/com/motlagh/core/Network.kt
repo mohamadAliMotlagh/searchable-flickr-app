@@ -1,5 +1,6 @@
 package com.motlagh.core
 
+import android.os.Build
 import com.motlagh.core.calladapter.NetworkResultModelAdapterFactory
 import dagger.Module
 import dagger.Provides
@@ -19,10 +20,11 @@ class NetworkManager() {
 
     private fun getClient(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("")// its could be in BuildConfig.
+            .baseUrl("https://flickr.com/services/")// its could be in BuildConfig.
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(NetworkResultModelAdapterFactory.create())
             .client(OkHttpClient.Builder()
+                .headerInterceptor()
                 .apply {
 //                    if (BuildConfig.DEBUG) {
                     logInterceptor()
@@ -34,6 +36,20 @@ class NetworkManager() {
             .build()
     }
 
+
+    private fun OkHttpClient.Builder.headerInterceptor(): OkHttpClient.Builder {
+        return this.addInterceptor { chain ->
+            val res: okhttp3.Response
+            val original = chain.request()
+            val requestBuilder = original.newBuilder()
+            requestBuilder
+                .method(original.method, original.body)
+                .header("Content-Type", "application/json")
+                .build()
+            val request = requestBuilder.build()
+            chain.proceed(request)
+        }
+    }
 
     private fun OkHttpClient.Builder.logInterceptor(): OkHttpClient.Builder {
 

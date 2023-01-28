@@ -3,14 +3,16 @@ package com.motlagh.flickerlist.data
 import com.motlagh.core.ResultModel
 import com.motlagh.core.extensions.map
 import com.motlagh.flickerlist.data.datasource.remote.FlickrRemoteDataSource
-import com.motlagh.flickerlist.data.mapper.toModel
-import com.motlagh.flickerlist.data.network.FlickrDataService
+import com.motlagh.flickerlist.data.mapper.toFlickrModel
 import com.motlagh.flickerlist.domain.model.FlickrModel
 import com.motlagh.flickerlist.domain.repository.FlickrRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
 
-class FlickrRepositoryImpl(private val flickrRemoteDataSource: FlickrRemoteDataSource) :
+class FlickrRepositoryImpl @Inject constructor(private val flickrRemoteDataSource: FlickrRemoteDataSource) :
     FlickrRepository {
 
     override suspend fun getList(
@@ -23,12 +25,12 @@ class FlickrRepositoryImpl(private val flickrRemoteDataSource: FlickrRemoteDataS
                 flickrRemoteDataSource.getImagesList(searchedText, page).map { flickerEntity ->
                     flickerEntity.photos?.let { photos ->
                         photos.photo?.let { listPhoto ->
-                            listPhoto.map { it.toModel() }
+                            listPhoto.map { it.toFlickrModel() }
                         } ?: listOf()
                     } ?: listOf()
                 }
 
             emit(flickerModel)
-        }
+        }.flowOn(Dispatchers.IO)
     }
 }
