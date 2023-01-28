@@ -8,5 +8,6 @@ android{
 dependencies {
     appCompat()
     compose()
+    hilt()
     addTestsDependencies()
 }
