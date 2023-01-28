@@ -31,11 +31,11 @@ class FlickrViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            callApi("hello")
+
             searchedText.debounce(1000).collect { text ->
 
                 if (text.isEmpty()) return@collect
-
+                callApi(text)
             }
         }
     }
