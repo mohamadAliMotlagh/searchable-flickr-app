@@ -1,4 +1,4 @@
-package com.motlagh.flickerlist.presenter
+package com.motlagh.flickerlist.presenter.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.material.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -21,25 +22,26 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.motlagh.flickerlist.domain.model.FlickrModel
+import com.motlagh.flickerlist.presenter.FlickrViewModel
 
 
 @Composable
 fun FlickrUI(viewModel: FlickrViewModel = hiltViewModel()) {
+
+    val textSearch = viewModel.searchedText.collectAsState().value
+    val list = viewModel.images.collectAsState().value
     Scaffold(
         topBar = {
-            PatientItemTextFieldUI(viewModel)
+            SearchTextFieldUI(
+                currentText = textSearch,
+                queryText = viewModel::searchText
+            )
         },
         content = { contentPadding ->
-            ImageListUI(viewModel.images.collectAsState().value, contentPadding)
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                text = { Text("Action") },
-                onClick = {  }
-            )
-            ExtendedFloatingActionButton(
-                text = { Text("Action2") },
-                onClick = {  }
+            ImageListUI(
+                list = list,
+                padding = contentPadding,
+                onItemClicked = viewModel::navigateToShowImage
             )
         }
     )
@@ -47,10 +49,10 @@ fun FlickrUI(viewModel: FlickrViewModel = hiltViewModel()) {
 
 
 @Composable
-fun PatientItemTextFieldUI(
-    viewModel: FlickrViewModel
+fun SearchTextFieldUI(
+    currentText: String,
+    queryText: (String) -> Unit
 ) {
-    val textSearch = viewModel.searchedText.collectAsState()
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -63,12 +65,12 @@ fun PatientItemTextFieldUI(
                 focusedBorderColor = Color.Cyan,
                 textColor = Color.Black,
             ),
-            value = textSearch.value,
+            value = currentText,
             singleLine = true,
             label = {
                 Text(text = "search here", color = Color.Gray)
             },
-            onValueChange = viewModel::searchText,
+            onValueChange = queryText,
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .padding(horizontal = 12.dp)
@@ -77,28 +79,37 @@ fun PatientItemTextFieldUI(
 }
 
 @Composable
-fun ImageListUI(list: List<FlickrModel>, contentPadding: PaddingValues) {
+fun ImageListUI(
+    list: List<FlickrModel>,
+    padding: PaddingValues,
+    onItemClicked: (String) -> Unit
+) {
 
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(contentPadding),
+            .padding(padding),
         columns = GridCells.Fixed(2),
         content = {
             itemsIndexed(list) { _, item ->
-                ListItem(item.thumbnailAddress, item.title)
+                ListItem(item.thumbnailAddress, item.title) {
+                    onItemClicked.invoke(item.mainImageAddress)
+                }
             }
         }
     )
 }
 
 @Composable
-fun ListItem(imageAddress: String, title: String) {
+fun ListItem(imageAddress: String, title: String, clickable: () -> Unit) {
     Box(
         modifier = Modifier
             .aspectRatio(1f)
-            .clip(RoundedCornerShape(0.dp)),
+            .clip(RoundedCornerShape(0.dp))
+            .clickable {
+                clickable.invoke()
+            },
         contentAlignment = Alignment.Center
     ) {
         Image(
