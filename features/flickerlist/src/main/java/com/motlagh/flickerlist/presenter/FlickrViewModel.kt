@@ -6,6 +6,8 @@ import com.motlagh.core.ResultModel
 import com.motlagh.flickerlist.domain.GetListUseCase
 import com.motlagh.flickerlist.domain.model.FlickrModel
 import com.motlagh.imageviewer.navigation.ShowImageDestination
+import com.motlagh.quicksearch.domain.usecase.GetSavedQueriesUseCase
+import com.motlagh.quicksearch.domain.usecase.SaveQueryUseCase
 import com.motlagh.uikit.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -15,28 +17,40 @@ import javax.inject.Inject
 @HiltViewModel
 class FlickrViewModel @Inject constructor(
     private val getListUseCase: GetListUseCase,
+    private val getQueries: GetSavedQueriesUseCase,
+    private val saveQuery: SaveQueryUseCase,
     private val navigator: Navigator,
 ) :
     ViewModel(), Navigator by navigator {
 
-    private val _searchedText = MutableStateFlow("")//query
-    val searchedText = _searchedText.asStateFlow()
+    private val _queryText = MutableStateFlow("")//query
+    val queryText = _queryText.asStateFlow()
 
     private val _images = MutableStateFlow(listOf<FlickrModel>())
     val images = _images.asStateFlow()
 
+    private val _recentSearchItems = MutableStateFlow(listOf<String>())
+    val recentSearchItems = _recentSearchItems.asStateFlow()
+
     fun searchText(text: String) {
-        _searchedText.value = text
+        _queryText.value = text
     }
 
     init {
         viewModelScope.launch {
-
-            searchedText.debounce(1000).collect { text ->
+            launch { loadRecentSearch() }
+            queryText.debounce(1000).collect { text ->
 
                 if (text.isEmpty()) return@collect
-                callApi(text)
+                launch { callApi(text) }
+                launch { saveSearchedQuery(text) }
             }
+        }
+    }
+
+    fun search(query:String){
+        viewModelScope.launch {
+            callApi(query)
         }
     }
 
@@ -53,6 +67,22 @@ class FlickrViewModel @Inject constructor(
 
     fun navigateToShowImage(mainImageAddress: String) {
         navigate(ShowImageDestination.createShowImageRoute(mainImageAddress))
+    }
+
+    private suspend fun saveSearchedQuery(query: String) {
+        saveQuery.invoke(query)
+
+    }
+
+    private suspend fun loadRecentSearch() {
+        getQueries().collect {
+            it.onSuccess {
+                _recentSearchItems.value = it.map { it.query }
+
+            }.onFailure {
+
+            }
+        }
     }
 
 

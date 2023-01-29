@@ -32,6 +32,7 @@ fun DependencyHandler.hilt() {
 fun DependencyHandler.room() {
     implementation(Dependencies.ROOM)
     implementation(Dependencies.ROOM_RUNTIME)
+    kapt(Dependencies.ROOM_COMPILER)
 }
 
 fun DependencyHandler.retrofitAPI() {
@@ -47,6 +48,10 @@ fun DependencyHandler.implementation(depName: String) {
 
 fun DependencyHandler.kapt(depName: String) {
     add("kapt", depName)
+}
+
+fun DependencyHandler.ksp(depName: String) {
+    add("ksp", depName)
 }
 
 private fun DependencyHandler.compileOnly(depName: String) {

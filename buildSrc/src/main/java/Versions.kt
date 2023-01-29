@@ -10,7 +10,7 @@ object Versions {
     const val CORE_KTX = "1.9.0"
     const val FRAGMENT_KTX = "1.4.0"
     const val CONSTRAIN_LAYOUT = "2.1.2"
-    const val ROOM = "2.4.3"
+    const val ROOM = "2.5.0"
     const val DAGGER = "2.44"
     const val DAGGER_VIEWMODEL = "1.0.0"
     const val RX_JAVA = "2.1.9"

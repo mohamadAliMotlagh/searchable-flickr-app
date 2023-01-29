@@ -45,12 +45,12 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Versions.COMPOSE_OPTION_VERSION
     }
-//    kapt {
-//        correctErrorTypes = true
-//        javacOptions {
-//            option("-Adagger.hilt.android.internal.disableAndroidSuperclassValidation=true")
-//        }
-//    }
+    kapt {
+        correctErrorTypes = true
+        javacOptions {
+            option("-Adagger.hilt.android.internal.disableAndroidSuperclassValidation=true")
+        }
+    }
     packagingOptions {
         resources {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
@@ -64,8 +64,12 @@ dependencies {
     appCompat()
     addAndroidTestsDependencies()
     room()
+   // ksp(Dependencies.ROOM_COMPILER)
     hilt()
     implementation(project(":uikit"))
+    //implementation("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.6")
+
     implementation(project(":features:flickerlist"))
+    implementation(project(":features:quicksearch"))
 
 }
