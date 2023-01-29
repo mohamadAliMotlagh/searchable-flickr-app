@@ -9,12 +9,13 @@ import com.motlagh.imageviewer.navigation.ShowImageDestination
 import com.motlagh.imageviewer.presenter.ShowImageUI
 import com.motlagh.uikit.navigator.NavigationDestination
 
-
+//it creates a map of destinations.
 val composableDestinations: Map<NavigationDestination, @Composable () -> Unit> = mapOf(
     ShowImageDestination to { ShowImageUI() },
     ListImageDestination to { FlickrUI() }
 )
 
+//it adds all destinations to graph
 fun NavGraphBuilder.addFlickrComposableDestinations() {
     composableDestinations.forEach { composable ->
         val destination = composable.key

@@ -1,5 +1,6 @@
 package com.motlagh.flickerlist.presenter
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.motlagh.core.ResultModel
@@ -10,10 +11,12 @@ import com.motlagh.quicksearch.domain.usecase.GetSavedQueriesUseCase
 import com.motlagh.quicksearch.domain.usecase.SaveQueryUseCase
 import com.motlagh.uikit.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class FlickrViewModel @Inject constructor(
     private val getListUseCase: GetListUseCase,
@@ -23,7 +26,7 @@ class FlickrViewModel @Inject constructor(
 ) :
     ViewModel(), Navigator by navigator {
 
-    private val _queryText = MutableStateFlow("")//query
+    private val _queryText = MutableStateFlow("")
     val queryText = _queryText.asStateFlow()
 
     private val _images = MutableStateFlow(listOf<FlickrModel>())
@@ -48,20 +51,17 @@ class FlickrViewModel @Inject constructor(
         }
     }
 
-    fun search(query:String){
+    fun search(query: String) {
         viewModelScope.launch {
             callApi(query)
         }
     }
 
     private suspend fun callApi(text: String) {
-        getListUseCase(text).collect {
-            when (it) {
-                is ResultModel.Error -> TODO()
-                is ResultModel.Success -> {
-                    _images.value = it.value
-                }
-            }
+        getListUseCase(text).onSuccess {
+            _images.value = it
+        }.onFailure {
+
         }
     }
 
@@ -71,7 +71,6 @@ class FlickrViewModel @Inject constructor(
 
     private suspend fun saveSearchedQuery(query: String) {
         saveQuery.invoke(query)
-
     }
 
     private suspend fun loadRecentSearch() {

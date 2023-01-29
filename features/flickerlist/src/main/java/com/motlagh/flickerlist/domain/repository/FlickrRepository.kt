@@ -5,5 +5,5 @@ import com.motlagh.flickerlist.domain.model.FlickrModel
 import kotlinx.coroutines.flow.Flow
 
 interface FlickrRepository {
-    suspend fun getList(searchedText: String, page: Int): Flow<ResultModel<List<FlickrModel>>>
+    suspend fun getList(searchedText: String): List<FlickrModel>
 }

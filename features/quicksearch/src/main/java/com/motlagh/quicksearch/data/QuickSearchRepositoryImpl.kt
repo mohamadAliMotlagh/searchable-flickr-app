@@ -21,9 +21,7 @@ class QuickSearchRepositoryImpl(private val dataSource: QuickSearchLocalDataSour
     }
 
     override suspend fun saveQueryItem(query: QueryModel) {
-        withContext(IO) {
-            dataSource.saveQueryItem(query.toQueryItemEntity())
-            dataSource.deleteQueryItem()// it helps us to have last 10 searched item.
-        }
+        dataSource.saveQueryItem(query.toQueryItemEntity())
+        dataSource.deleteQueryItem()// it helps us to have last 10 searched item.
     }
 }

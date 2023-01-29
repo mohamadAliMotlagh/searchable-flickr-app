@@ -99,7 +99,9 @@ fun ImageListUI(
                 RecentSearchUI(recentSearch, onRecentSearchClicked)
             }
 
-            itemsIndexed(list) { _, item ->
+            items(items = list, key = {
+                it.imageID
+            }) { item ->
                 ListItem(item.thumbnailAddress, item.title) {
                     onItemClicked.invoke(item.mainImageAddress)
                 }
@@ -121,8 +123,7 @@ fun RecentSearchUI(recentSearch: List<String>, onRecentSearchClicked: (String) -
         content = {
 
 
-            itemsIndexed(recentSearch) { _, item ->
-
+            items(items = recentSearch, key = { it }) { item ->
                 Column(
                     modifier = Modifier
                         .width(IntrinsicSize.Max)

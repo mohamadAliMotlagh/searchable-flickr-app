@@ -2,6 +2,7 @@ package com.motlagh.flickerlist.data
 
 import com.motlagh.core.ResultModel
 import com.motlagh.core.extensions.map
+import com.motlagh.core.extensions.resultOf
 import com.motlagh.flickerlist.data.datasource.remote.FlickrRemoteDataSource
 import com.motlagh.flickerlist.data.mapper.toFlickrModel
 import com.motlagh.flickerlist.domain.model.FlickrModel
@@ -16,21 +17,12 @@ class FlickrRepositoryImpl @Inject constructor(private val flickrRemoteDataSourc
     FlickrRepository {
 
     override suspend fun getList(
-        searchedText: String,
-        page: Int
-    ): Flow<ResultModel<List<FlickrModel>>> {
-        return flow {
-
-            val flickerListModel =
-                flickrRemoteDataSource.getImagesList(searchedText, page).map { flickerEntity ->
-                    flickerEntity.photos?.let { photos ->
-                        photos.photo?.let { listPhoto ->
-                            listPhoto.map { it.toFlickrModel() }
-                        } ?: listOf()
-                    } ?: listOf()
-                }
-            emit(flickerListModel)
-            
-        }.flowOn(Dispatchers.IO)
+        searchedText: String
+    ): List<FlickrModel> {
+        return flickrRemoteDataSource.getImagesList(searchedText).photos?.let { photos ->
+            photos.photo?.let { listPhoto ->
+                listPhoto.map { it.toFlickrModel() }
+            } ?: listOf()
+        } ?: listOf()
     }
 }

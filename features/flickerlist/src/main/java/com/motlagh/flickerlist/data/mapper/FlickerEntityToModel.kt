@@ -9,5 +9,6 @@ fun Photo.toFlickrModel(): FlickrModel {
         title = title ?: "",
         mainImageAddress = "https://live.staticflickr.com/${server}/${id}_${secret}_b.jpg",
         thumbnailAddress = "https://live.staticflickr.com/${server}/${id}_${secret}_t.jpg",
+        imageID = id ?: ""
     )
 }
