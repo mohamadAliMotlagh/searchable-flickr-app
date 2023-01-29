@@ -21,7 +21,7 @@ class FlickrRepositoryImpl @Inject constructor(private val flickrRemoteDataSourc
     ): Flow<ResultModel<List<FlickrModel>>> {
         return flow {
 
-            val flickerModel =
+            val flickerListModel =
                 flickrRemoteDataSource.getImagesList(searchedText, page).map { flickerEntity ->
                     flickerEntity.photos?.let { photos ->
                         photos.photo?.let { listPhoto ->
@@ -29,8 +29,8 @@ class FlickrRepositoryImpl @Inject constructor(private val flickrRemoteDataSourc
                         } ?: listOf()
                     } ?: listOf()
                 }
-
-            emit(flickerModel)
+            emit(flickerListModel)
+            
         }.flowOn(Dispatchers.IO)
     }
 }
