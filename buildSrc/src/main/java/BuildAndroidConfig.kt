@@ -1,6 +1,6 @@
 
 object BuildAndroidConfig {
-    const val APPLICATION_ID = "com.motlagh.flicker"
+    const val APPLICATION_ID = "com.motlagh.flickr"
     const val COMPILE_SDK_VERSION = 33
     const val MIN_SDK_VERSION = 21
     const val TARGET_SDK_VERSION = 33

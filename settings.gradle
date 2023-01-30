@@ -15,7 +15,7 @@ dependencyResolutionManagement {
 rootProject.name = "Flicker"
 include ':app'
 include ':uikit'
-include ':features:flickerlist'
+include ':features:flickrlist'
 include ':core'
 include ':features:imageviewer'
 include ':features:quicksearch'

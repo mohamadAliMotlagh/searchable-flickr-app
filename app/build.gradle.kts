@@ -68,9 +68,7 @@ dependencies {
    // ksp(Dependencies.ROOM_COMPILER)
     hilt()
     implementation(project(":uikit"))
-    //implementation("com.google.devtools.ksp:symbol-processing-api:1.6.21-1.0.6")
-
-    implementation(project(":features:flickerlist"))
+    implementation(project(":features:flickrlist"))
     implementation(project(":features:quicksearch"))
 
 }

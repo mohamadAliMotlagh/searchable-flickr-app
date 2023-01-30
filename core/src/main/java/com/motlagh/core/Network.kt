@@ -31,7 +31,6 @@ class NetworkManager() {
 
     private fun OkHttpClient.Builder.headerInterceptor(): OkHttpClient.Builder {
         return this.addInterceptor { chain ->
-            val res: okhttp3.Response
             val original = chain.request()
             val requestBuilder = original.newBuilder()
             requestBuilder
