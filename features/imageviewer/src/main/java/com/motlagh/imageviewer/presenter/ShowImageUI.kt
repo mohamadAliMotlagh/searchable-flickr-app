@@ -44,17 +44,14 @@ fun ShowImageUI(viewModel: ImageViewerViewModel = hiltViewModel()) {
             }
         }
     )
-
 }
-
 
 @Composable
 private fun ImageLoader(imageAddress: String) {
     Image(
         painter = rememberAsyncImagePainter(
             model = imageAddress,
-            imageLoader = ImageLoader.Builder(LocalContext.current).crossfade(false)
-                .build()
+            imageLoader = ImageLoader.Builder(LocalContext.current).build()
         ),
         contentDescription = null,
         Modifier

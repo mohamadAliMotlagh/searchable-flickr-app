@@ -3,9 +3,7 @@ package com.motlagh.flickerlist.presenter
 import app.cash.turbine.test
 import com.motlagh.flickerlist.domain.GetListUseCase
 import com.motlagh.flickerlist.domain.model.FlickrModel
-import com.motlagh.quicksearch.data.QuickSearchRepositoryImpl
 import com.motlagh.quicksearch.domain.model.QueryModel
-import com.motlagh.quicksearch.domain.repository.QuickSearchRepository
 import com.motlagh.quicksearch.domain.usecase.GetSavedQueriesUseCase
 import com.motlagh.quicksearch.domain.usecase.SaveQueryUseCase
 import com.motlagh.uikit.*
@@ -15,9 +13,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.*
 import org.junit.Before
 import org.junit.Rule
@@ -37,7 +33,6 @@ class MainDispatcherRule(val dispatcher: TestDispatcher = StandardTestDispatcher
 }
 
 class FlickrViewModelTest {
-
 
     @ExperimentalCoroutinesApi
     @get:Rule
@@ -108,7 +103,16 @@ class FlickrViewModelTest {
     fun `should show ViewData when call get image list request from server and result is success`() =
         runTest {
             coEvery { saveQuery.invoke("message") } returns Result.failure(Exception("message"))
-            coEvery { getListUseCase.invoke("message") } returns Result.success(listOf(FlickrModel("","","","")))
+            coEvery { getListUseCase.invoke("message") } returns Result.success(
+                listOf(
+                    FlickrModel(
+                        "",
+                        "",
+                        "",
+                        ""
+                    )
+                )
+            )
             setupViewModel()
 
             //when
@@ -123,26 +127,27 @@ class FlickrViewModelTest {
 
 
     @Test
-    fun `should show filled List when call recent search from database with success state`() = runTest {
+    fun `should show filled List when call recent search from database with success state`() =
+        runTest {
 
-        coEvery { getQueries.invoke() } returns flowOf(
-            Result.success(
-                listOf(
-                    QueryModel("test"),
-                    QueryModel("test2")
+            coEvery { getQueries.invoke() } returns flowOf(
+                Result.success(
+                    listOf(
+                        QueryModel("test"),
+                        QueryModel("test2")
+                    )
                 )
             )
-        )
 
-        setupViewModel()
-        objectUnderTest.recentSearchItems.test {
+            setupViewModel()
+            objectUnderTest.recentSearchItems.test {
 
-            assertTrue(awaitItem().isEmpty())
-            assertTrue(awaitItem().isNotEmpty())
+                assertTrue(awaitItem().isEmpty())
+                assertTrue(awaitItem().isNotEmpty())
 
-            cancelAndConsumeRemainingEvents()
+                cancelAndConsumeRemainingEvents()
+            }
         }
-    }
 
 
     @Test

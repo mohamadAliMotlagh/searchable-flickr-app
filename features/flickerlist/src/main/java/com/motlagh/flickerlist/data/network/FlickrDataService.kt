@@ -1,6 +1,5 @@
 package com.motlagh.flickerlist.data.network
 
-import com.motlagh.core.ResultModel
 import com.motlagh.flickerlist.data.entity.FlickrEntity
 import retrofit2.http.GET
 import retrofit2.http.Query

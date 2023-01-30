@@ -1,17 +1,10 @@
 package com.motlagh.core
 
-import android.os.Build
-import com.motlagh.core.calladapter.NetworkResultModelAdapterFactory
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
 
 class NetworkManager() {
@@ -22,7 +15,6 @@ class NetworkManager() {
         return Retrofit.Builder()
             .baseUrl("https://flickr.com/services/")// its could be in BuildConfig.
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(NetworkResultModelAdapterFactory.create())
             .client(OkHttpClient.Builder()
                 .headerInterceptor()
                 .apply {
