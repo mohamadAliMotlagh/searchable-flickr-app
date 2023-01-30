@@ -5,7 +5,7 @@ import com.motlagh.quicksearch.data.entity.QueryItemEntity
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface QueryDao {
-    @Query("SELECT * FROM QueryItemEntity")
+    @Query("SELECT * FROM QueryItemEntity ORDER BY id DESC")
     fun getQuery(): Flow<List<QueryItemEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

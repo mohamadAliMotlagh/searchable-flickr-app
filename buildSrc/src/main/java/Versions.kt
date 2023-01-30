@@ -31,7 +31,7 @@ object Versions {
     const val EXT = "1.1.2"
     const val ARCH_CORE = "2.1.0"
     const val JUNIT = "4.13.1"
-    const val MOCKITO = "2.23.0"
+    const val MOCKK = "1.13.4"
     const val ESPRESSO = "3.3.0"
     const val RX_IDLER = "0.11.0"
 }

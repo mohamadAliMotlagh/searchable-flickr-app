@@ -1,14 +1,13 @@
 package com.motlagh.flickerlist.presenter
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.motlagh.core.ResultModel
 import com.motlagh.flickerlist.domain.GetListUseCase
 import com.motlagh.flickerlist.domain.model.FlickrModel
 import com.motlagh.imageviewer.navigation.ShowImageDestination
 import com.motlagh.quicksearch.domain.usecase.GetSavedQueriesUseCase
 import com.motlagh.quicksearch.domain.usecase.SaveQueryUseCase
+import com.motlagh.uikit.*
 import com.motlagh.uikit.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -26,42 +25,55 @@ class FlickrViewModel @Inject constructor(
 ) :
     ViewModel(), Navigator by navigator {
 
+    companion object {
+        const val debounceDelay = 500L
+    }
+
     private val _queryText = MutableStateFlow("")
     val queryText = _queryText.asStateFlow()
 
-    private val _images = MutableStateFlow(listOf<FlickrModel>())
+    private val _images = MutableStateFlow<ViewState<List<FlickrModel>>>(Idle)
     val images = _images.asStateFlow()
 
     private val _recentSearchItems = MutableStateFlow(listOf<String>())
     val recentSearchItems = _recentSearchItems.asStateFlow()
 
-    fun searchText(text: String) {
+    fun requestSearchWithQueryText(text: String) {
         _queryText.value = text
+    }
+
+    fun retrySearchWithQuery() {
+        viewModelScope.launch {
+            callApi(queryText.value)
+        }
     }
 
     init {
         viewModelScope.launch {
             launch { loadRecentSearch() }
-            queryText.debounce(1000).collect { text ->
+            queryText.debounce(debounceDelay).collect { text ->
 
-                if (text.isEmpty()) return@collect
+                if (text.isEmpty()) {
+                    _images.value = ViewData(listOf())
+                    return@collect
+                }
                 launch { callApi(text) }
                 launch { saveSearchedQuery(text) }
             }
         }
     }
 
-    fun search(query: String) {
-        viewModelScope.launch {
-            callApi(query)
-        }
-    }
-
     private suspend fun callApi(text: String) {
+        _images.value = ViewLoading
         getListUseCase(text).onSuccess {
-            _images.value = it
-        }.onFailure {
+            if (it.isEmpty()){
+                _images.value = ViewError("no results found")
+            }else{
+                _images.value = ViewData(it)
+            }
 
+        }.onFailure {
+            _images.value = ViewError("An error occurred.")
         }
     }
 
@@ -70,19 +82,18 @@ class FlickrViewModel @Inject constructor(
     }
 
     private suspend fun saveSearchedQuery(query: String) {
-        saveQuery.invoke(query)
-    }
-
-    private suspend fun loadRecentSearch() {
-        getQueries().collect {
-            it.onSuccess {
-                _recentSearchItems.value = it.map { it.query }
-
-            }.onFailure {
-
-            }
+        saveQuery.invoke(query).onFailure {
+            _recentSearchItems.value = listOf()
         }
     }
 
-
+    private suspend fun loadRecentSearch() {
+        getQueries().collect { result ->
+            result.onSuccess { queriesList ->
+                _recentSearchItems.value = queriesList.map { it.query }
+            }.onFailure {
+                _recentSearchItems.value = listOf()
+            }
+        }
+    }
 }

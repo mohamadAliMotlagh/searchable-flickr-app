@@ -13,36 +13,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material.*
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import com.motlagh.flickerlist.domain.model.FlickrModel
 import com.motlagh.flickerlist.presenter.FlickrViewModel
+import com.motlagh.uikit.*
+import com.motlagh.uikit.common.ErrorUI
+import com.motlagh.uikit.common.LoadingUI
 
 
 @Composable
 fun FlickrUI(viewModel: FlickrViewModel = hiltViewModel()) {
 
     val textSearch = viewModel.queryText.collectAsState().value
-    val list = viewModel.images.collectAsState().value
+    val imagesViewState = viewModel.images.collectAsState().value
     val recentSearchList = viewModel.recentSearchItems.collectAsState().value
 
     Scaffold(
         topBar = {
             SearchTextFieldUI(
                 currentText = textSearch,
-                queryText = viewModel::searchText
+                queryText = viewModel::requestSearchWithQueryText
             )
         },
         content = { contentPadding ->
+
             ImageListUI(
-                list = list,
+                imagesViewState = imagesViewState,
                 recentSearchList,
                 padding = contentPadding,
                 onItemClicked = viewModel::navigateToShowImage,
-                onRecentSearchClicked = viewModel::search
+                onRecentSearchClicked = viewModel::requestSearchWithQueryText,
+                onclickRetryWhenError = viewModel::retrySearchWithQuery
             )
+
         }
     )
 }
@@ -80,34 +87,55 @@ fun SearchTextFieldUI(
 
 @Composable
 fun ImageListUI(
-    list: List<FlickrModel>,
+    imagesViewState: ViewState<List<FlickrModel>>,
     recentSearch: List<String>,
     padding: PaddingValues,
     onItemClicked: (String) -> Unit,
-    onRecentSearchClicked: (String) -> Unit
+    onRecentSearchClicked: (String) -> Unit,
+    onclickRetryWhenError: () -> Unit
 ) {
 
-    LazyVerticalGrid(
-        modifier = Modifier
-            .background(Color.White)
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(padding),
-        columns = GridCells.Fixed(2),
-        content = {
-            item(span = { GridItemSpan(this.maxLineSpan) }) {
-                RecentSearchUI(recentSearch, onRecentSearchClicked)
-            }
+    Box() {
+        val list: List<FlickrModel> =
+            if (imagesViewState is ViewData) imagesViewState.data else listOf()
+        LazyVerticalGrid(
+            modifier = Modifier
+                .background(Color.White)
+                .fillMaxSize()
+                .padding(padding),
+            columns = GridCells.Fixed(2),
+            content = {
+                item(span = { GridItemSpan(this.maxLineSpan) }) {
+                    RecentSearchUI(recentSearch, onRecentSearchClicked)
+                }
 
-            items(items = list, key = {
-                it.imageID
-            }) { item ->
-                ListItem(item.thumbnailAddress, item.title) {
-                    onItemClicked.invoke(item.mainImageAddress)
+                items(items = list, key = {
+                    it.imageID
+                }) { item ->
+                    ListItem(item.thumbnailAddress, item.title) {
+                        onItemClicked.invoke(item.mainImageAddress)
+                    }
                 }
             }
+        )
+
+        when (imagesViewState) {
+            is ViewError -> {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Spacer(modifier = Modifier.height(65.dp))
+                    ErrorUI(imagesViewState.message,onclickRetryWhenError)
+                }
+            }
+            ViewLoading -> {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Spacer(modifier = Modifier.height(65.dp))
+                    LoadingUI()
+                }
+            }
+            else -> {}
         }
-    )
+
+    }
 }
 
 @Composable
@@ -116,10 +144,10 @@ fun RecentSearchUI(recentSearch: List<String>, onRecentSearchClicked: (String) -
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .heightIn(0.dp, 90.dp),
+            .heightIn(0.dp, 60.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        rows = GridCells.Fixed(3),
+        rows = GridCells.Fixed(2),
         content = {
 
 
@@ -165,7 +193,7 @@ fun ListItem(imageAddress: String, title: String, clickable: () -> Unit) {
         Image(
             painter = rememberAsyncImagePainter(
                 model = imageAddress,
-                imageLoader = ImageLoader.Builder(LocalContext.current).crossfade(true)
+                imageLoader = ImageLoader.Builder(LocalContext.current)
                     .build()
             ),
             contentDescription = null,

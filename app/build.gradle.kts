@@ -63,6 +63,7 @@ dependencies {
     compose()
     appCompat()
     addAndroidTestsDependencies()
+    addTestsDependencies()
     room()
    // ksp(Dependencies.ROOM_COMPILER)
     hilt()

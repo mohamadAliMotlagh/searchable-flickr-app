@@ -12,4 +12,7 @@ dependencies {
     implementation(project(":features:quicksearch"))
     hilt()
     implementation(Dependencies.COIL)
+
+    addTestsDependencies()
+
 }

@@ -81,7 +81,7 @@ object TestAndroidDependencies {
 }
 object TestDependencies {
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
-    const val MOCKITO = "org.mockito:mockito-core:${Versions.MOCKITO}"
+    const val MOCKK = "io.mockk:mockk:${Versions.MOCKK}"
     const val EXT = "androidx.test.ext:junit:${Versions.EXT}"
     const val CORE = "androidx.test:core:${Versions.TEST}"
     const val RUNNER = "androidx.test:runner:${Versions.TEST}"
@@ -90,12 +90,15 @@ object TestDependencies {
 }
 fun DependencyHandler.addTestsDependencies() {
     testImplementation(TestDependencies.JUNIT)
-    testImplementation(TestDependencies.MOCKITO)
+    testImplementation(TestDependencies.MOCKK)
     testImplementation(TestDependencies.CORE)
     testImplementation(TestDependencies.ARCH_CORE)
     testImplementation(TestDependencies.RULES)
     testImplementation(TestDependencies.RUNNER)
     testImplementation(TestDependencies.EXT)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    testImplementation("app.cash.turbine:turbine:0.12.1")
+
 }
 
 /**
