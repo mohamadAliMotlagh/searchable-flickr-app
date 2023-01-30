@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 
-class NetworkManager() {
+class NetworkManager {
 
     fun <T> create(serviceClass: Class<T>): T = getClient().create(serviceClass)
 
@@ -18,9 +18,7 @@ class NetworkManager() {
             .client(OkHttpClient.Builder()
                 .headerInterceptor()
                 .apply {
-//                    if (BuildConfig.DEBUG) {
                     logInterceptor()
-                    //  }
                 }
                 .readTimeout(120, TimeUnit.SECONDS)
                 .connectTimeout(120, TimeUnit.SECONDS)

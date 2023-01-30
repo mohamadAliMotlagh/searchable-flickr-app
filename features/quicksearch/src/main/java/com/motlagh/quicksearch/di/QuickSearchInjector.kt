@@ -24,16 +24,15 @@ object QuickSearchInjector {
         return QuickSearchLocalDataSourceImpl(dao)
     }
 
-
     @Provides
     @Singleton
     fun provideRepository(dataSource: QuickSearchLocalDataSource): QuickSearchRepository {
-        return QuickSearchRepositoryImpl(dataSource);
+        return QuickSearchRepositoryImpl(dataSource)
     }
 
     @Provides
     fun provideQueryUseCase(repository: QuickSearchRepository): SaveQueryUseCase {
-        return SaveQueryUseCase(repository);
+        return SaveQueryUseCase(repository)
     }
 
     @Provides

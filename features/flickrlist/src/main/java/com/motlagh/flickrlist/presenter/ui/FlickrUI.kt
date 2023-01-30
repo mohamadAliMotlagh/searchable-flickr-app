@@ -100,7 +100,7 @@ fun ImageListUI(
     onclickRetryWhenError: () -> Unit
 ) {
 
-    Box() {
+    Box {
         val list: List<FlickrModel> =
             if (imagesViewState is ViewData) imagesViewState.data else listOf()
         LazyVerticalGrid(

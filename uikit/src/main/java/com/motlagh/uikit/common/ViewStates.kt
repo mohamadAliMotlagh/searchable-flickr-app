@@ -47,7 +47,7 @@ fun LoadingUI() {
 @Preview
 @Composable
 fun Preview() {
-    Column() {
+    Column {
         LoadingUI()
     }
 }

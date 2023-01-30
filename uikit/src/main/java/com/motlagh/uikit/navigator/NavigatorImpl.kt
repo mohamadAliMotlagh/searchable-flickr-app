@@ -1,13 +1,11 @@
 package com.motlagh.uikit.navigator
 
 import androidx.navigation.NavOptionsBuilder
-import com.motlagh.uikit.navigator.Navigator
-import com.motlagh.uikit.navigator.NavigatorEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 
 
- class NavigatorImpl  : Navigator {
+class NavigatorImpl  : Navigator {
 
     private val navigationEvents = Channel<NavigatorEvent>()
     override val destinations = navigationEvents.receiveAsFlow()

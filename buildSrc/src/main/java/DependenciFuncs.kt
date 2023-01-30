@@ -1,11 +1,6 @@
 import AnnotationProcessorsDependencies.HILT
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
-fun DependencyHandler.jetPackApi(){
-    api(Dependencies.LIFECYCLE_VIEWMODEL)
-    api(Dependencies.LIFECYCLE_LIVEDATA)
-}
-
 fun DependencyHandler.appCompat() {
     api(Dependencies.APPCOMPAT)
     api(Dependencies.CORE_KTX)
@@ -52,10 +47,6 @@ fun DependencyHandler.kapt(depName: String) {
 
 fun DependencyHandler.ksp(depName: String) {
     add("ksp", depName)
-}
-
-private fun DependencyHandler.compileOnly(depName: String) {
-    add("compileOnly", depName)
 }
 
 private fun DependencyHandler.api(depName: String) {

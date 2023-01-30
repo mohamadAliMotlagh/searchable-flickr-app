@@ -2,6 +2,8 @@ package com.motlagh.flickrlist.data.mapper
 
 import com.motlagh.flickrlist.data.entity.Photo
 import com.motlagh.flickrlist.domain.model.FlickrModel
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 fun Photo.toFlickrModel(): FlickrModel {

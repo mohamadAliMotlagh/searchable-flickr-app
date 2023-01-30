@@ -22,7 +22,6 @@ object Versions {
     const val COMPOSE = "1.3.1"
     const val COMPOSE_OPTION_VERSION = "1.3.2"
     const val COMPOSE_NAVIGATION = "2.6.0-alpha04"
-    const val LEAK_CANARY = "2.5"
     const val OK_HTTP = "5.0.0-alpha.2"
     const val COIL = "2.2.2"
 
