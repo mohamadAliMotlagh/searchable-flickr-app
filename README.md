@@ -1,5 +1,5 @@
 # searchable-flickr-app
-a searchable clean mvvm app with Flickr Api.
+a clean mvvm app with Flickr Api and modular structure
 
 ### **Libraries/concepts used**
 
